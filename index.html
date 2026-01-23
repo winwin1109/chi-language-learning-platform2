@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職業中文—教學資源分享平台</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22; /* 3003 主色 */
+            --secondary-color: #2980b9; /* 3007 主色 */
+            --bg-color: #f4f7f6;
+            --book-bg: #fff;
+            --guide-bg: #e8f6f3;
+            --guide-border: #1abc9c;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        /* --- 視圖控制 (View Control) --- */
+        .view-section {
+            display: none; /* 預設隱藏所有視圖 */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block; /* 加上 active class 才顯示 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 1. 圖書館視圖 (Library View) --- */
+        .library-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .course-book {
+            width: 260px;
+            height: 340px;
+            background: #fff;
+            border-radius: 10px 20px 20px 10px;
+            box-shadow: 
+                5px 5px 15px rgba(0,0,0,0.1),
+                inset 10px 0 20px rgba(0,0,0,0.05); /* 書脊陰影 */
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-left: 15px solid; /* 書脊顏色 */
+            padding: 20px;
+        }
+
+        /* 個別書本配色 */
+        .book-3003 { border-left-color: var(--accent-color); }
+        .book-3003::after { background: var(--accent-color); } /* 裝飾線 */
+        
+        .book-3007 { border-left-color: var(--secondary-color); }
+        .book-3007::after { background: var(--secondary-color); }
+
+        .course-book:hover {
+            transform: translateY(-10px) rotateY(-5deg);
+            box-shadow: 10px 15px 25px rgba(0,0,0,0.2);
+        }
+
+        .book-cover-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .book-cover-icon {
+            font-size: 80px;
+            margin: 20px 0;
+        }
+
+        .book-label {
+            background: #eee;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* --- 2. 書架視圖 (Shelf View) --- */
+        .shelf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .shelf-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .shelf-title::before {
+            content: '📖';
+            margin-right: 10px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .chest-container {
+            display: flex;
+            justify-content: center; /* 改為置中 */
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* 遊戲項目樣式 */
+        .chest-item {
+            text-align: center;
+            width: 220px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            user-select: none;
+        }
+
+        .chest-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        .chest-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 5px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chest-icon {
+            font-size: 70px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .chest-item:hover .chest-icon {
+            transform: scale(1.1);
+        }
+
+        /* --- 金幣特效 --- */
+        .coin-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            animation: coinJump 0.8s ease-out forwards;
+        }
+
+        @keyframes coinJump {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -60px) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
+        }
+
+        /* --- 手機語音設定指南 --- */
+        .guide-section {
+            background: var(--guide-bg);
+            border: 2px dashed var(--guide-border);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: auto; /* 推到底部 */
+        }
+
+        .guide-section h2 {
+            color: #16a085;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .guide-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .guide-col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .guide-col h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #1abc9c;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .guide-text ul { padding-left: 20px; }
+        .guide-text li { margin-bottom: 10px; line-height: 1.6; }
+        
+        .lang-tag {
+            background: #e0f2f1;
+            color: #00897b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 0.85em;
+        }
+
+        /* --- 彈跳視窗 (Modal) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-body h3 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .goal-list {
+            background: #f9f9f9;
+            padding: 15px 20px 15px 30px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .game-link-btn {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+
+        .game-link-btn:hover { background: #d35400; }
+
+        .qr-display { text-align: center; margin-top: 10px; }
+        .qr-display img { max-width: 150px; border: 1px solid #ddd; padding: 5px; background: white; }
+        .qr-label { display: block; margin-top: 5px; color: #666; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .chest-item { width: 100%; max-width: 300px; }
+            header h1 { font-size: 1.5rem; }
+            .shelf-header { flex-direction: column-reverse; gap: 10px; align-items: flex-start; }
+            .back-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>職業中文—教學資源分享平台</h1>
+    </header>
+
+    <main>
+        <section id="library-view" class="view-section active">
+            <div class="library-container">
+                <div class="course-book book-3003" onclick="openBook('3003')">
+                    <div class="book-cover-title">LAN3003<br>電子教學資源</div>
+                    <div class="book-cover-icon">💼</div>
+                    <div class="book-label">點擊打開課程</div>
+                </div>
+                
+                <div class="course-book book-3007" onclick="openBook('3007')">
+                    <div class="book-cover-title">LAN3007<br>電子教學資源</div>
+                    <div class="book-cover-icon">⚖️</div>
+                    <div class="book-label">點擊打開課程</div>
+                </div>
+            </div>
+            
+            <p style="text-align:center; color:#777; margin-top:30px;">請點選上方書本以進入相關課程遊戲</p>
+        </section>
+
+        <section id="shelf-view" class="view-section">
+            <div style="background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+                <div class="shelf-header">
+                    <h2 class="shelf-title" id="shelf-title-text">課程資源</h2>
+                    <button class="back-btn" onclick="showLibrary()">⬅ 返回書櫃</button>
+                </div>
+                
+                <div class="chest-container" id="game-container">
+                    </div>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h2>📱 手機語音播放設定指南 (通用)</h2>
+            <div class="guide-content">
+                <div class="guide-col">
+                    <h3>🍎 iOS 用戶</h3>
+                    <div class="guide-text">
+                        <ul>
+                            <li><strong>解除靜音模式：</strong>請務必撥動機身側邊開關，確保<strong>不顯示橘色</strong>。</li>
+                            <li><strong>設定語音：</strong>設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文。
+                                <br><span class="lang-tag">普通話</span>選「China mainland／Taiwan」。
+                                <br><span class="lang-tag">廣東話</span>選「Hong Kong」。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="guide-col">
+                    <h3>🤖 Android 用戶</h3>
+                    <div class="guide-text">
+                        <ul>
+                            <li><strong>調整媒體音量：</strong>確保拉大的是「媒體/音樂」音量。</li>
+                            <li><strong>設定語音 (TTS)：</strong>設定 → 語言與輸入 → 文字轉語音。
+                                <br><span class="lang-tag">普通話</span>選「中文 (普通話)」。
+                                <br><span class="lang-tag">廣東話</span>選「粵語 (香港)」。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-header" id="modalTitle">標題</div>
+            <div class="modal-body">
+                <h3>🎯 教學目標</h3>
+                <div id="modalGoals"></div>
+                <div class="action-area">
+                    <a href="#" target="_blank" id="modalLink" class="game-link-btn">👉 進入遊戲教學</a>
+                    <div class="qr-display">
+                        <img src="" alt="QR Code" id="modalQR">
+                        <span class="qr-label">掃描 QR Code 開啟</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 資料庫設定 ---
+        const resources = {
+            1: {
+                title: "金牌銷售特訓班",
+                icon: "🛥️",
+                link: "https://winwin1109.github.io/3003-lt3-speaking/",
+                qr: "P1.jpg",
+                goals: `
+                    <li><strong>需求分析與篩選：</strong>訓練學生在面對客戶的「硬性條件」時，如何快速排除不合適的選項。</li>
+                    <li><strong>多角度比較策略：</strong>引導學生針對不同客群的需求，分析產品在「設施、服務、價格」上的優勢。</li>
+                    <li><strong>建構推介邏輯：</strong>透過「查詢需求 ➡ 比較優劣 ➡ 歸納推介」三步驟建立論述。</li>
+                `
+            },
+            2: {
+                title: "介紹技巧大冒險",
+                icon: "🗣️",
+                link: "https://winwin1109.github.io/lt1-describe/",
+                qr: "P2.jpg",
+                goals: `
+                    <li><strong>掌握說明結構：</strong>學習如何有條理地介紹事物（概括➡分類➡分項說明）。</li>
+                    <li><strong>豐富陳述詞彙：</strong>透過「神祕關卡」學習關於外觀、材質的精確用語，並練習不同開場白。</li>
+                `
+            },
+            3: {
+                title: "比較的力量",
+                icon: "⚖️",
+                link: "https://winwin1109.github.io/3003-lt3-test1/",
+                qr: "P3.jpg",
+                goals: `
+                    <li><strong>掌握比較技巧：</strong>引導學生先比較相同，再比較不同，並分析兩項事物的優劣勢。</li>
+                `
+            },
+            4: {
+                title: "溝通回覆遊戲",
+                icon: "📱",
+                link: "https://winwin1109.github.io/3003-LT3-WHATSAPP/",
+                qr: "P4.jpg",
+                goals: `
+                    <li><strong>建立專業溝通形象：</strong>學習如何以合適的語氣和用詞回覆訊息。</li>
+                    <li><strong>情境應對與同理心：</strong>針對客戶投訴或緊急詢問，練習給出具備同理心的回覆。</li>
+                `
+            },
+            5: {
+                title: "界題遊戲",
+                icon: "🎯",
+                link: "https://winwin1109.github.io/3007-lt1-Topic-Analysis/",
+                qr: "P5.jpg",
+                goals: `
+                    <li><strong>精準拆解題目：</strong>學習分析辯題，快速識別「關鍵字」與「討論核心」。</li>
+                    <li><strong>掌握定義範疇：</strong>練習對重要詞彙進行定義，以確立討論範圍。</li>
+                `
+            },
+            6: {
+                title: "邏輯法庭",
+                icon: "🏛️",
+                link: "https://winwin1109.github.io/3007lt1-court/",
+                qr: "P6.jpg",
+                goals: `
+                    <li><strong>辨識邏輯謬誤：</strong>透過法庭審判情境，引導學生認識立場、論點與論據。</li>
+                `
+            },
+            7: {
+                title: "論證大師",
+                icon: "🔎",
+                link: "https://winwin1109.github.io/3007-lt2-edvidence/",
+                qr: "P7.jpg",
+                goals: `
+                    <li><strong>區分論據種類：</strong>學習分辨「例證法」、「演繹法」、「比較法」與「歸納法」。</li>
+                    <li><strong>提升論證說服力：</strong>練習為不同的論點選擇最強有力的證據。</li>
+                `
+            },
+            8: {
+                title: "首輪發言練習",
+                icon: "🎤",
+                link: "https://winwin1109.github.io/3007-Opening-Statement/",
+                qr: "P8.jpg",
+                goals: `
+                    <li><strong>掌握開場架構：</strong>學習「首輪發言」的結構。</li>
+                    <li><strong>提升條理性：</strong>訓練在有限時間內，清晰、有層次地陳述己方核心主張。</li>
+                `
+            }
+        };
+
+        // 課程對應的遊戲 ID 列表
+        const courses = {
+            '3003': {
+                name: 'LAN3003 電子教學資源',
+                items: [2, 3, 4, 1], // 順序：介紹, 比較, 回覆, 金牌
+                color: '#e67e22'
+            },
+            '3007': {
+                name: 'LAN3007 電子教學資源',
+                items: [5, 6, 7, 8], // 順序：界題, 邏輯, 論證, 首輪
+                color: '#2980b9'
+            }
+        };
+
+        // --- 2. 視圖切換邏輯 ---
+        function showLibrary() {
+            document.getElementById('shelf-view').classList.remove('active');
+            document.getElementById('library-view').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function openBook(courseId) {
+            const course = courses[courseId];
+            const container = document.getElementById('game-container');
+            const title = document.getElementById('shelf-title-text');
+            
+            // 設定標題與顏色
+            title.innerText = course.name;
+            title.style.color = course.color;
+
+            // 清空並重新渲染遊戲
+            container.innerHTML = '';
+            
+            course.items.forEach(id => {
+                const data = resources[id];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'chest-item';
+                // 綁定金幣特效點擊
+                itemDiv.onclick = (e) => triggerCoinEffect(e, id);
+                itemDiv.innerHTML = `
+                    <div class="chest-title" style="background:${course.color}">${data.title}</div>
+                    <div class="chest-icon">${data.icon}</div>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            // 切換視圖
+            document.getElementById('library-view').classList.remove('active');
+            document.getElementById('shelf-view').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // --- 3. 金幣與 Modal 邏輯 ---
+        function triggerCoinEffect(event, id) {
+            const chest = event.currentTarget;
+            const coin = document.createElement('div');
+            coin.innerText = '🪙'; 
+            coin.className = 'coin-effect';
+            chest.appendChild(coin);
+
+            setTimeout(() => { openModal(id); }, 400);
+            setTimeout(() => { coin.remove(); }, 800);
+        }
+
+        const modal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalGoals = document.getElementById('modalGoals');
+        const modalLink = document.getElementById('modalLink');
+        const modalQR = document.getElementById('modalQR');
+
+        function openModal(id) {
+            const data = resources[id];
+            modalTitle.innerText = data.title;
+            modalGoals.innerHTML = `<ul class="goal-list">${data.goals}</ul>`;
+            modalLink.href = data.link;
+            modalQR.src = data.qr;
+            modalQR.alt = `QR Code for ${data.title}`;
+            
+            modalQR.onerror = function() {
+                this.style.display = 'none';
+                this.parentNode.querySelector('.qr-label').innerText = '(圖片未找到: ' + data.qr + ')';
+            };
+            modalQR.onload = function() {
+                this.style.display = 'inline-block';
+            };
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
