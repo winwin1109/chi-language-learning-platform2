@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>職業中文—教學資源分享平台</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1G1KSXH8DB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1G1KSXH8DB');
+    </script>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -471,7 +480,7 @@
                 <h3>🎯 教學目標</h3>
                 <div id="modalGoals"></div>
                 <div class="action-area">
-                    <a href="#" target="_blank" id="modalLink" class="game-link-btn">👉 進入遊戲教學</a>
+                    <a href="#" target="_blank" id="modalLink" class="game-link-btn" onclick="trackGameClick()">👉 進入遊戲教學</a>
                     <div class="qr-display">
                         <img src="" alt="QR Code" id="modalQR">
                         <span class="qr-label">掃描 QR Code 開啟</span>
@@ -564,7 +573,6 @@
                     <li><strong>提升條理性：</strong>訓練在有限時間內，清晰、有層次地陳述己方核心主張。</li>
                 `
             },
-            /* --- 新增資源 9, 10, 11 --- */
             9: {
                 title: "腦力激盪 (發想篇)",
                 icon: "🧠",
@@ -594,6 +602,46 @@
                     <li><strong>快速反應判斷：</strong>在時間壓力下，訓練學生快速辨識論點中的矛盾或錯誤。</li>
                     <li><strong>邏輯敏銳度：</strong>提升對無效論證或邏輯謬誤的警覺性與辨識能力。</li>
                 `
+            },
+            12: {
+                title: "會議廳對話練習(一)",
+                icon: "💬",
+                link: "https://winwin1109.github.io/3003-lt4-practise-meeting1/",
+                qr: "P12.jpg",
+                goals: `
+                    <li><strong>聆聽與回應：</strong>訓練在會議情境中，聆聽對方需求並做出合適回應。</li>
+                    <li><strong>場地比較推介：</strong>根據客戶需求，比較不同會議廳的優劣，並做出推介。</li>
+                `
+            },
+            13: {
+                title: "會議廳對話練習(二)",
+                icon: "📝",
+                link: "https://winwin1109.github.io/3003-lt4-practise-meeting2/",
+                qr: "P13.jpg",
+                goals: `
+                    <li><strong>聆聽與回應：</strong>訓練在會議情境中，聆聽對方需求並做出合適回應。</li>
+                    <li><strong>場地比較推介：</strong>根據客戶需求，比較不同會議廳的優劣，並做出推介。</li>
+                `
+            },
+            14: {
+                title: "訂遊艇對話練習",
+                icon: "🌊",
+                link: "https://winwin1109.github.io/3003-lt4-practise-boat/",
+                qr: "P14.jpg",
+                goals: `
+                    <li><strong>詢問與報價：</strong>學習如何針對服務項目進行詢問與確認價格。</li>
+                    <li><strong>設施比較：</strong>根據客戶需求，比較不同遊艇方案的優劣。</li>
+                `
+            },
+            15: {
+                title: "瘋兔推銷特訓班",
+                icon: "🐰",
+                link: "https://winwin1109.github.io/3003-lt4-rabbit/",
+                qr: "P15.jpg",
+                goals: `
+                    <li><strong>快速反應訓練：</strong>在時間壓力下，快速判斷客戶需求並給出正確回應。</li>
+                    <li><strong>推銷話術應用：</strong>強化產品特點的介紹與說服技巧。</li>
+                `
             }
         };
 
@@ -601,12 +649,13 @@
         const courses = {
             '3003': {
                 name: 'LAN3003 電子教學資源',
-                items: [2, 3, 4, 1], // 順序：介紹, 比較, 回覆, 金牌
+                // [更新] 加入新課程 ID: 12, 13, 14, 15
+                items: [2, 3, 4, 1, 12, 13, 14, 15], 
                 color: '#e67e22'
             },
             '3007': {
                 name: 'LAN3007 電子教學資源',
-                items: [5, 6, 7, 8, 9, 10, 11], // 新增 9, 10, 11
+                items: [5, 6, 7, 8, 9, 10, 11],
                 color: '#2980b9'
             }
         };
@@ -676,6 +725,7 @@
             modalQR.src = data.qr;
             modalQR.alt = `QR Code for ${data.title}`;
             
+            // 處理圖片載入錯誤
             modalQR.onerror = function() {
                 this.style.display = 'none';
                 this.parentNode.querySelector('.qr-label').innerText = '(圖片未找到: ' + data.qr + ')';
@@ -691,6 +741,15 @@
                 </button>
             `;
             
+            // GA4: 追蹤視窗開啟 (視為曝光)
+            if (typeof gtag === 'function') {
+                gtag('event', 'view_item', {
+                    'event_category': 'Game Interaction',
+                    'event_label': data.title,
+                    'game_name': data.title
+                });
+            }
+            
             modal.style.display = 'flex';
         }
 
@@ -698,7 +757,7 @@
             modal.style.display = 'none';
         }
         
-        // 新增：複製連結功能
+        // 複製連結功能
         function copyLink(url) {
             navigator.clipboard.writeText(url).then(() => {
                 const btn = document.querySelector('.copy-btn');
@@ -719,6 +778,18 @@
                 console.error('複製失敗:', err);
                 alert('複製失敗，請手動複製連結');
             });
+        }
+        
+        // GA4: 點擊按鈕追蹤
+        function trackGameClick() {
+            const gameTitle = document.getElementById('modalTitle').innerText;
+            if (typeof gtag === 'function') {
+                gtag('event', 'click_game_link', {
+                    'event_category': 'Game Interaction',
+                    'event_label': gameTitle,
+                    'game_name': gameTitle
+                });
+            }
         }
 
         window.onclick = function(event) {
