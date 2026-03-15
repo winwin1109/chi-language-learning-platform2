@@ -723,6 +723,25 @@
                     <li><strong>學習目標：</strong>跟隨步驟製作簡報，並透過觀看示範來組織講稿。</li>
                     <li><strong>教學建議：</strong>學生完成簡報製作或匯報練習後，可在遊戲的解鎖密碼中輸入「<strong>DILWL</strong>」，讓學生參考匯報講稿。</li>
                 `
+            },
+            24: {
+                title: "邀請信寫作要點",
+                icon: "✍️",
+                link: "https://winwin1109.github.io/invitationletter-keypoint/",
+                qr: "P24.jpg",
+                goals: `
+                    <li><strong>了解寫作要點：</strong>通過填充練習，讓學生了解邀請信的寫作要點和內容重點。</li>
+                `
+            },
+            25: {
+                title: "邀請信寫作小助手",
+                icon: "🥊",
+                link: "https://winwin1109.github.io/write-invitationletter/",
+                qr: "P25.jpg",
+                goals: `
+                    <li><strong>加深理解：</strong>通過拳擊遊戲，加深學生對邀請信的了解。</li>
+                    <li><strong>深化寫作重點：</strong>以步驟帶領學生從篩選資料到重組資料，逐步深化邀請信的寫作重點。</li>
+                `
             }
         };
 
@@ -730,13 +749,13 @@
         const courses = {
             '3003': {
                 name: 'LAN3003 電子教學資源',
-                // [更新] 加入新課程 ID: 23
                 items: [2, 3, 4, 1, 12, 13, 14, 15, 16, 23], 
                 color: '#e67e22'
             },
             '3007': {
                 name: 'LAN3007 電子教學資源',
-                items: [5, 6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22],
+                // [更新] 加入新課程 ID: 24, 25
+                items: [5, 6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22, 24, 25],
                 color: '#2980b9'
             }
         };
@@ -857,7 +876,7 @@
                 }, 2000);
             }).catch(err => {
                 console.error('複製失敗:', err);
-                alert('複製失敗，請手動複製連結');
+                alert('複製失敗，請手手動複製連結');
             });
         }
         
