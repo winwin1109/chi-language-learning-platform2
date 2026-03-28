@@ -15,241 +15,356 @@
     </script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e67e22; /* 3003 主色 */
-            --secondary-color: #2980b9; /* 3007 主色 */
-            --bg-color: #f4f7f6;
-            --book-bg: #fff;
-            --guide-bg: #e8f6f3;
-            --guide-border: #1abc9c;
+            /* 全新活潑時尚配色 */
+            --primary-gradient: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            
+            --accent-3003-start: #ff9f43; /* 活力橙 */
+            --accent-3003-end: #ff6b6b; /* 珊瑚紅 */
+            --accent-3003-gradient: linear-gradient(135deg, var(--accent-3003-start) 0%, var(--accent-3003-end) 100%);
+            
+            --secondary-3007-start: #48dbfb; /* 清爽藍 */
+            --secondary-3007-end: #1dd1a1; /* 綠松石綠 */
+            --secondary-3007-gradient: linear-gradient(135deg, var(--secondary-3007-start) 0%, var(--secondary-3007-end) 100%);
+
+            --bg-color: #f0f4f8; /* 極淺藍灰背景 */
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --guide-bg: #e0f7fa;
+            --guide-border: #00acc1;
+
+            /* 陰影與圓角 */
+            --box-shadow-card: 0 10px 20px rgba(0,0,0,0.08);
+            --box-shadow-hover: 0 15px 30px rgba(0,0,0,0.15);
+            --border-radius-lg: 25px;
+            --border-radius-md: 15px;
         }
 
         body {
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
             background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(72, 219, 251, 0.1) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(255, 159, 67, 0.1) 0px, transparent 50%);
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: var(--primary-color);
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: var(--primary-gradient);
             color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 25px rgba(44, 62, 80, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         /* --- 視圖控制 (View Control) --- */
         .view-section {
-            display: none; /* 預設隱藏所有視圖 */
-            animation: fadeIn 0.5s ease-in-out;
+            display: none;
+            animation: AppSpawn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
         .view-section.active {
-            display: block; /* 加上 active class 才顯示 */
+            display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes AppSpawn {
+            from { opacity: 0; transform: translateY(30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* --- 1. 圖書館視圖 (Library View) --- */
         .library-container {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 50px;
             padding: 20px;
             flex-wrap: wrap;
         }
 
         .course-book {
-            width: 260px;
-            height: 340px;
-            background: #fff;
-            border-radius: 10px 20px 20px 10px;
+            width: 280px;
+            height: 380px;
+            background: var(--card-bg);
+            border-radius: 15px 30px 30px 15px;
             box-shadow: 
-                5px 5px 15px rgba(0,0,0,0.1),
-                inset 10px 0 20px rgba(0,0,0,0.05); /* 書脊陰影 */
+                8px 8px 25px rgba(0,0,0,0.1),
+                inset 15px 0 30px rgba(0,0,0,0.03); 
             cursor: pointer;
             position: relative;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             text-align: center;
-            border-left: 15px solid; /* 書脊顏色 */
-            padding: 20px;
+            border-left: 20px solid;
+            padding: 30px 20px;
+            overflow: hidden;
+        }
+
+        .course-book::before {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.3s;
+            z-index: 1;
         }
 
         /* 個別書本配色 */
-        .book-3003 { border-left-color: var(--accent-color); }
-        .book-3003::after { background: var(--accent-color); } /* 裝飾線 */
+        .book-3003 { border-left-color: var(--accent-3003-start); }
+        .book-3003 .book-cover-title { background: var(--accent-3003-gradient); -webkit-background-clip: text; color: transparent; }
         
-        .book-3007 { border-left-color: var(--secondary-color); }
-        .book-3007::after { background: var(--secondary-color); }
+        .book-3007 { border-left-color: var(--secondary-3007-start); }
+        .book-3007 .book-cover-title { background: var(--secondary-3007-gradient); -webkit-background-clip: text; color: transparent; }
 
         .course-book:hover {
-            transform: translateY(-10px) rotateY(-5deg);
-            box-shadow: 10px 15px 25px rgba(0,0,0,0.2);
+            transform: translateY(-15px) scale(1.03) rotateY(-3deg);
+            box-shadow: 15px 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .course-book:hover::before {
+            background: rgba(255,255,255,0.05);
         }
 
         .book-cover-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #444;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
         }
 
         .book-cover-icon {
-            font-size: 80px;
-            margin: 20px 0;
+            font-size: 110px;
+            margin: 0;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.1));
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s;
+        }
+        
+        .course-book:hover .book-cover-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .book-label {
-            background: #eee;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #666;
+            background: #f1f3f5;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            border: 1px solid #e9ecef;
         }
 
         /* --- 2. 書架視圖 (Shelf View) --- */
+        .shelf-view-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-card);
+            position: relative;
+        }
+        
+        .shelf-view-container::before {
+            content: '🎨';
+            position: absolute; font-size: 150px; opacity: 0.03; bottom: -30px; left: -30px; pointer-events: none;
+        }
+
         .shelf-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #f1f3f5;
+            padding-bottom: 15px;
         }
 
         .shelf-title {
-            font-size: 1.8rem;
-            color: var(--primary-color);
+            font-size: 2.2rem;
             margin: 0;
             display: flex;
             align-items: center;
+            font-weight: 900;
         }
         
         .shelf-title::before {
-            content: '📖';
-            margin-right: 10px;
+            content: '✨';
+            margin-right: 15px;
+            font-size: 2.5rem;
         }
 
         .back-btn {
-            padding: 10px 20px;
-            background-color: #95a5a6;
+            padding: 12px 28px;
+            background: #b2bec3;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .back-btn:hover {
-            background-color: #7f8c8d;
+            background: #636e72;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         .chest-container {
             display: flex;
-            justify-content: center; /* 改為置中 */
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 35px;
             padding: 20px 0;
         }
 
-        /* 遊戲項目樣式 */
+        /* 遊戲項目 App 卡片樣式 */
         .chest-item {
             text-align: center;
-            width: 220px;
+            width: 240px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border: 2px solid #f1f3f5;
             user-select: none;
+            overflow: hidden;
+        }
+        
+        .chest-item::after {
+            content: ''; position: absolute; width: 60px; height: 60px; background: rgba(0,0,0,0.02);
+            bottom: -20px; right: -20px; border-radius: 50%; transition: all 0.4s;
         }
 
         .chest-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            border-color: var(--accent-color);
+            transform: translateY(-12px) rotate(1deg);
+            box-shadow: var(--box-shadow-hover);
+        }
+        
+        .chest-item:hover::after {
+            transform: scale(2.5);
+            background: rgba(0,0,0,0.03);
         }
 
         .chest-title {
-            background: var(--primary-color);
-            color: white;
-            padding: 8px 5px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 1rem;
-            min-height: 48px;
+            color: var(--text-main);
+            padding: 0;
+            margin-bottom: 20px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            min-height: 54px;
             display: flex;
             align-items: center;
             justify-content: center;
+            line-height: 1.3;
+            position: relative;
+            z-index: 2;
         }
 
         .chest-icon {
-            font-size: 70px;
-            line-height: 1.2;
+            font-size: 90px;
+            line-height: 1;
             margin-bottom: 10px;
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            display: inline-block;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.08));
+            position: relative;
+            z-index: 2;
         }
         
         .chest-item:hover .chest-icon {
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
-        /* --- 金幣特效 --- */
+        /* 3003 特色：卡片上方有漸層條 */
+        .chest-item.theme-3003 { border-top: 6px solid var(--accent-3003-start); }
+        .chest-item.theme-3003:hover { border-color: var(--accent-3003-end); }
+        .chest-item.theme-3003 .chest-title { color: #d35400; }
+
+        /* 3007 特色：卡片上方有漸層條 */
+        .chest-item.theme-3007 { border-top: 6px solid var(--secondary-3007-start); }
+        .chest-item.theme-3007:hover { border-color: var(--secondary-3007-end); }
+        .chest-item.theme-3007 .chest-title { color: #00897b; }
+
+        /* --- 金幣特效 (保持有趣) --- */
         .coin-effect {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3rem;
+            font-size: 4rem;
             pointer-events: none;
             z-index: 100;
             opacity: 0;
-            animation: coinJump 0.8s ease-out forwards;
+            animation: coinJumpColorful 0.8s ease-out forwards;
         }
 
-        @keyframes coinJump {
-            0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
-            20% { opacity: 1; transform: translate(-50%, -60px) scale(1.2); }
-            100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
+        @keyframes coinJumpColorful {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.5) rotate(0deg); }
+            20% { opacity: 1; transform: translate(-50%, -70px) scale(1.3) rotate(180deg); }
+            100% { opacity: 0; transform: translate(-50%, -140px) scale(1) rotate(360deg); }
         }
 
-        /* --- 手機語音設定指南 --- */
+        /* --- 手機語音設定指南 (美化) --- */
         .guide-section {
             background: var(--guide-bg);
-            border: 2px dashed var(--guide-border);
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: auto; /* 推到底部 */
+            border: 3px dashed var(--guide-border);
+            padding: 35px;
+            border-radius: var(--border-radius-lg);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .guide-section::before {
+            content: '⚙️'; position: absolute; font-size: 100px; opacity: 0.05; top: 10px; right: 10px;
         }
 
         .guide-section h2 {
-            color: #16a085;
+            color: #00838f;
             text-align: center;
             margin-top: 0;
+            font-size: 2rem;
+            font-weight: 900;
         }
 
         .guide-content {
@@ -261,29 +376,37 @@
         .guide-col {
             flex: 1;
             min-width: 300px;
+            background: rgba(255,255,255,0.6);
+            padding: 20px;
+            border-radius: var(--border-radius-md);
         }
 
         .guide-col h3 {
-            color: #2c3e50;
-            border-bottom: 2px solid #1abc9c;
-            padding-bottom: 5px;
+            color: var(--text-main);
+            border-bottom: 3px solid var(--guide-border);
+            padding-bottom: 8px;
             margin-bottom: 15px;
+            display: flex; align-items: center;
         }
+        
+        .guide-col h3::before { margin-right: 10px; }
+        .guide-col:nth-child(1) h3::before { content: '🍎'; }
+        .guide-col:nth-child(2) h3::before { content: '🤖'; }
 
         .guide-text ul { padding-left: 20px; }
-        .guide-text li { margin-bottom: 10px; line-height: 1.6; }
+        .guide-text li { margin-bottom: 12px; line-height: 1.6; color: var(--text-sub); }
         
         .lang-tag {
-            background: #e0f2f1;
-            color: #00897b;
-            padding: 2px 6px;
-            border-radius: 4px;
+            background: var(--guide-border);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
             font-weight: bold;
             margin-right: 5px;
             font-size: 0.85em;
         }
 
-        /* --- 彈跳視窗 (Modal) --- */
+        /* --- 彈跳視窗 (Modal時尚化) --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -291,116 +414,131 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
             background: white;
             width: 90%;
-            max-width: 600px;
-            border-radius: 15px;
-            padding: 30px;
+            max-width: 650px;
+            border-radius: var(--border-radius-lg);
+            padding: 40px;
             position: relative;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            max-height: 90vh;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-height: 85vh;
             overflow-y: auto;
-            animation: slideDown 0.3s ease-out;
+            animation: appModalSpawn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
+            border: 8px solid transparent;
         }
-
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        
+        @keyframes appModalSpawn {
+            from { transform: translateY(50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
         .close-btn {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 30px;
+            top: 20px;
+            right: 25px;
+            font-size: 35px;
             cursor: pointer;
-            color: #aaa;
+            color: #b2bec3;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff6b6b;
+            transform: rotate(90deg);
         }
 
         .modal-header {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-weight: bold;
-            border-bottom: 2px solid var(--accent-color);
+            font-size: 2rem;
+            color: var(--text-main);
+            margin-bottom: 25px;
+            font-weight: 900;
             padding-bottom: 10px;
+            border-bottom: 4px solid #f1f3f5;
         }
 
         .modal-body h3 {
-            color: var(--accent-color);
-            font-size: 1.2rem;
-            margin-top: 20px;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 900;
         }
 
         .goal-list {
-            background: #f9f9f9;
-            padding: 15px 20px 15px 30px;
-            border-radius: 8px;
-            line-height: 1.6;
+            background: #f8f9fa;
+            padding: 20px 25px 20px 35px;
+            border-radius: var(--border-radius-md);
+            line-height: 1.7;
+            color: var(--text-sub);
+            border: 1px solid #e9ecef;
         }
 
         .action-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 25px;
-            gap: 15px;
+            margin-top: 35px;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f1f3f5;
         }
 
         .game-link-btn {
-            background: var(--accent-color);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             text-decoration: none;
             border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: background 0.3s;
+            font-weight: 900;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .game-link-btn:hover { background: #d35400; }
+        .game-link-btn:hover { 
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
 
-        .qr-display { text-align: center; margin-top: 10px; display: flex; flex-direction: column; align-items: center;}
-        .qr-display img { max-width: 150px; border: 1px solid #ddd; padding: 5px; background: white; }
-        .qr-label { display: block; margin-top: 5px; color: #666; font-size: 0.9rem; }
+        .qr-display { text-align: center; margin-top: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+        .qr-display img { max-width: 170px; border: 4px solid #f1f3f5; padding: 5px; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);}
+        .qr-label { display: block; color: var(--text-sub); font-size: 1rem; font-weight: bold; }
         
-        /* 新增：複製按鈕樣式 */
         .copy-btn {
-            margin-top: 10px;
-            padding: 6px 12px;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 8px 18px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 0.9rem;
-            color: #333;
+            font-size: 0.95rem;
+            color: var(--text-sub);
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            font-weight: bold;
         }
         
         .copy-btn:hover {
-            background-color: #e0e0e0;
-            border-color: #bbb;
-        }
-        
-        .copy-btn:active {
-            transform: scale(0.98);
+            background-color: #f1f3f5;
+            border-color: #ccc;
+            color: var(--text-main);
         }
 
         @media (max-width: 768px) {
-            .chest-item { width: 100%; max-width: 300px; }
-            header h1 { font-size: 1.5rem; }
-            .shelf-header { flex-direction: column-reverse; gap: 10px; align-items: flex-start; }
+            .chest-item { width: 100%; max-width: 320px; }
+            header h1 { font-size: 1.8rem; }
+            .shelf-header { flex-direction: column-reverse; gap: 15px; align-items: flex-start; }
             .back-btn { width: 100%; }
+            .library-container { gap: 30px; }
+            .course-book { width: 100%; height: auto; border-radius: 15px; border-left-width: 10px; }
         }
     </style>
 </head>
@@ -426,26 +564,26 @@
                 </div>
             </div>
             
-            <p style="text-align:center; color:#777; margin-top:30px;">請點選上方書本以進入相關課程遊戲</p>
+            <p style="text-align:center; color:var(--text-sub); margin-top:40px; font-weight:bold; font-size:1.1rem;">👉 請點選上方課程書本進入專屬資源庫</p>
         </section>
 
         <section id="shelf-view" class="view-section">
-            <div style="background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+            <div class="shelf-view-container">
                 <div class="shelf-header">
                     <h2 class="shelf-title" id="shelf-title-text">課程資源</h2>
                     <button class="back-btn" onclick="showLibrary()">⬅ 返回書櫃</button>
                 </div>
                 
                 <div class="chest-container" id="game-container">
-                    </div>
+                </div>
             </div>
         </section>
 
         <section class="guide-section">
-            <h2>📱 手機語音播放設定指南 (通用)</h2>
+            <h2>📱 手機語音播放設定指南</h2>
             <div class="guide-content">
                 <div class="guide-col">
-                    <h3>🍎 iOS 用戶</h3>
+                    <h3>iOS 用戶</h3>
                     <div class="guide-text">
                         <ul>
                             <li><strong>解除靜音模式：</strong>請務必撥動機身側邊開關，確保<strong>不顯示橘色</strong>。</li>
@@ -457,7 +595,7 @@
                     </div>
                 </div>
                 <div class="guide-col">
-                    <h3>🤖 Android 用戶</h3>
+                    <h3>Android 用戶</h3>
                     <div class="guide-text">
                         <ul>
                             <li><strong>調整媒體音量：</strong>確保拉大的是「媒體/音樂」音量。</li>
@@ -473,7 +611,7 @@
     </main>
 
     <div class="modal-overlay" id="infoModal">
-        <div class="modal-content">
+        <div class="modal-content" id="modalContent">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div class="modal-header" id="modalTitle">標題</div>
             <div class="modal-body">
@@ -822,21 +960,56 @@
                     <li><strong>整合練習：</strong>這是一個整合了課堂互動練習的平台。</li>
                     <li><strong>期末備考：</strong>專為學生在學期末進行知識複習與考試準備而設計。</li>
                 `
+            },
+            34: {
+                title: "慰問小達人",
+                icon: "💖",
+                link: "https://winwin1109.github.io/comfort-game/",
+                qr: "P34.jpg",
+                goals: `
+                    <li><strong>掌握慰問語氣：</strong>透過情境選擇，引導學生了解在不同情況下，如何給予適切的關心與安慰。</li>
+                    <li><strong>句式重組訓練：</strong>藉由組建句式練習，培養對不同對象表達慰問時的遣詞用字技巧。</li>
+                `
+            },
+            35: {
+                title: "慰問信寫作要點",
+                icon: "📋",
+                link: "https://winwin1109.github.io/comfort-letter-keypoint/",
+                qr: "P35.jpg",
+                goals: `
+                    <li><strong>釐清寫作重點：</strong>透過選擇題互動，協助學生快速掌握慰問信的核心內容與寫作要領。</li>
+                    <li><strong>熟悉格式結構：</strong>引導學生認識並熟練應用慰問信的標準格式與段落安排。</li>
+                `
+            },
+            36: {
+                title: "慰問信寫作助理",
+                icon: "💌",
+                link: "https://winwin1109.github.io/write-comfortletter/",
+                qr: "P36.jpg",
+                goals: `
+                    <li><strong>循序漸進寫作：</strong>以步驟化引導幫助學生梳理思路，從零開始完成一篇完整的慰問信。</li>
+                    <li><strong>趣味詞彙鞏固：</strong>結合「彈鋼琴」神秘挑戰關卡，讓學生在遊戲中熟悉並鞏固慰問信的常用專屬詞彙。</li>
+                `
             }
         };
 
-        // 課程對應的遊戲 ID 列表
         const courses = {
             '3003': {
                 name: 'LAN3003 電子教學資源',
-                // [更新] 加入新課程 ID: 33
                 items: [2, 3, 4, 1, 12, 13, 14, 15, 16, 23, 26, 30, 31, 32, 33], 
-                color: '#e67e22'
+                colorStart: 'var(--accent-3003-start)',
+                colorEnd: 'var(--accent-3003-end)',
+                gradient: 'var(--accent-3003-gradient)',
+                themeClass: 'theme-3003'
             },
             '3007': {
                 name: 'LAN3007 電子教學資源',
-                items: [5, 6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22, 24, 25, 27, 28, 29],
-                color: '#2980b9'
+                // [更新] 加入新課程 ID: 34, 35, 36
+                items: [5, 6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22, 24, 25, 27, 28, 29, 34, 35, 36],
+                colorStart: 'var(--secondary-3007-start)',
+                colorEnd: 'var(--secondary-3007-end)',
+                gradient: 'var(--secondary-3007-gradient)',
+                themeClass: 'theme-3007'
             }
         };
 
@@ -854,7 +1027,9 @@
             
             // 設定標題與顏色
             title.innerText = course.name;
-            title.style.color = course.color;
+            title.style.background = course.gradient;
+            title.style.webkitBackgroundClip = 'text';
+            title.style.color = 'transparent';
 
             // 清空並重新渲染遊戲
             container.innerHTML = '';
@@ -862,11 +1037,10 @@
             course.items.forEach(id => {
                 const data = resources[id];
                 const itemDiv = document.createElement('div');
-                itemDiv.className = 'chest-item';
-                // 綁定金幣特效點擊
-                itemDiv.onclick = (e) => triggerCoinEffect(e, id);
+                itemDiv.className = `chest-item ${course.themeClass}`;
+                itemDiv.onclick = (e) => triggerCoinEffect(e, id, courseId);
                 itemDiv.innerHTML = `
-                    <div class="chest-title" style="background:${course.color}">${data.title}</div>
+                    <div class="chest-title">${data.title}</div>
                     <div class="chest-icon">${data.icon}</div>
                 `;
                 container.appendChild(itemDiv);
@@ -879,49 +1053,66 @@
         }
 
         // --- 3. 金幣與 Modal 邏輯 ---
-        function triggerCoinEffect(event, id) {
+        function triggerCoinEffect(event, id, courseId) {
             const chest = event.currentTarget;
             const coin = document.createElement('div');
-            coin.innerText = '🪙'; 
+            coin.innerText = '✨'; // 換成更有創意的圖示
             coin.className = 'coin-effect';
             chest.appendChild(coin);
 
-            setTimeout(() => { openModal(id); }, 400);
+            setTimeout(() => { openModal(id, courseId); }, 400);
             setTimeout(() => { coin.remove(); }, 800);
         }
 
         const modal = document.getElementById('infoModal');
+        const modalContent = document.getElementById('modalContent');
         const modalTitle = document.getElementById('modalTitle');
         const modalGoals = document.getElementById('modalGoals');
         const modalLink = document.getElementById('modalLink');
         const modalQR = document.getElementById('modalQR');
-        const copyBtnContainer = document.getElementById('copyBtnContainer'); // 取得容器
+        const copyBtnContainer = document.getElementById('copyBtnContainer');
 
-        function openModal(id) {
+        function openModal(id, courseId) {
             const data = resources[id];
+            const course = courses[courseId];
+
             modalTitle.innerText = data.title;
+            // 彈窗標題顏色
+            modalTitle.style.background = course.gradient;
+            modalTitle.style.webkitBackgroundClip = 'text';
+            modalTitle.style.color = 'transparent';
+            
+            // 彈窗邊框顏色
+            modalContent.style.borderImage = `${course.gradient} 1`;
+
             modalGoals.innerHTML = `<ul class="goal-list">${data.goals}</ul>`;
+            
+            // 教學目標小標題顏色
+            const goalHeaders = modalGoals.parentNode.querySelectorAll('h3');
+            goalHeaders.forEach(h => h.style.color = course.colorStart);
+
             modalLink.href = data.link;
+            // 按鈕漸層色
+            modalLink.style.background = course.gradient;
+
             modalQR.src = data.qr;
             modalQR.alt = `QR Code for ${data.title}`;
             
-            // 處理圖片載入錯誤
             modalQR.onerror = function() {
                 this.style.display = 'none';
-                this.parentNode.querySelector('.qr-label').innerText = '(圖片未找到: ' + data.qr + ')';
+                this.parentNode.querySelector('.qr-label').innerText = '😥 QR Code 圖片載入失敗';
             };
             modalQR.onload = function() {
                 this.style.display = 'inline-block';
+                this.parentNode.querySelector('.qr-label').innerText = '掃描 QR Code 開啟';
             };
 
-            // 動態生成複製按鈕
             copyBtnContainer.innerHTML = `
                 <button class="copy-btn" onclick="copyLink('${data.link}')">
                     📋 複製連結
                 </button>
             `;
             
-            // GA4: 追蹤視窗開啟 (視為曝光)
             if (typeof gtag === 'function') {
                 gtag('event', 'view_item', {
                     'event_category': 'Game Interaction',
@@ -937,22 +1128,21 @@
             modal.style.display = 'none';
         }
         
-        // 複製連結功能
         function copyLink(url) {
             navigator.clipboard.writeText(url).then(() => {
                 const btn = document.querySelector('.copy-btn');
                 const originalText = btn.innerHTML;
                 
-                // 顯示成功提示
-                btn.innerHTML = '✅ 已複製！';
+                btn.innerHTML = '✅ 已複製連結！';
                 btn.style.backgroundColor = '#d4edda';
                 btn.style.borderColor = '#c3e6cb';
+                btn.style.color = '#155724';
                 
-                // 2秒後恢復原狀
                 setTimeout(() => {
                     btn.innerHTML = originalText;
-                    btn.style.backgroundColor = '#f1f1f1';
-                    btn.style.borderColor = '#ccc';
+                    btn.style.backgroundColor = 'white';
+                    btn.style.borderColor = '#ddd';
+                    btn.style.color = 'var(--text-sub)';
                 }, 2000);
             }).catch(err => {
                 console.error('複製失敗:', err);
@@ -960,7 +1150,6 @@
             });
         }
         
-        // GA4: 點擊按鈕追蹤
         function trackGameClick() {
             const gameTitle = document.getElementById('modalTitle').innerText;
             if (typeof gtag === 'function') {
